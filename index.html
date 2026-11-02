@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agel Shop Tarea 🛒</title>
+  <!-- Bootstrap 5 (diseño responsivo) y Font Awesome (íconos) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <!-- Fuente Roboto -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
+</head>
+<body>
+
+  <!-- 1. BARRA SUPERIOR: logo + botón del carrito -->
+  <nav class="navbar sticky-top bg-white shadow-sm">
+    <div class="container">
+      <a class="navbar-brand logo" href="#"><i class="fa-solid fa-cart-shopping"></i> Agel Shop Tarea</a>
+      <button class="btn btn-primary" data-bs-toggle="offcanvas" data-bs-target="#carrito">
+        🛍️ Carrito <span id="contador" class="badge bg-success">0</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Contenedor de alertas (mensajes de confirmación) -->
+  <div id="alertas" class="position-fixed top-0 end-0 p-3"></div>
+
+  <!-- 2. LISTA DE PRODUCTOS: se llena desde JavaScript -->
+  <main class="container py-4">
+    <h1 class="h3 mb-4">Productos</h1>
+    <div id="productos" class="row g-4">
+      <p class="text-muted">Cargando productos…</p>
+    </div>
+  </main>
+
+  <!-- 3. MODAL DE DETALLE DE PRODUCTO -->
+  <div class="modal fade" id="modalProducto" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="mTitulo"></h5>
+          <button class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="text-center mb-3"><img id="mImagen" class="img-modal" alt=""></div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item"><strong>Categoría:</strong> <span id="mCategoria"></span></li>
+            <li class="list-group-item"><strong>Descripción:</strong> <span id="mDescripcion"></span></li>
+            <li class="list-group-item"><strong>Precio:</strong> $<span id="mPrecio"></span></li>
+          </ul>
+        </div>
+        <div class="modal-footer justify-content-between">
+          <div class="input-group w-auto">
+            <span class="input-group-text">Cantidad</span>
+            <input id="mCantidad" type="number" min="1" value="1" class="form-control cantidad">
+          </div>
+          <button id="mAgregar" class="btn btn-success">🛒 Agregar al carrito</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. CARRITO (panel lateral) -->
+  <div class="offcanvas offcanvas-end" id="carrito" tabindex="-1">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title">🛒 Tu carrito</h5>
+      <button class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body d-flex flex-column">
+      <div id="listaCarrito" class="flex-grow-1"></div>
+      <div class="border-top pt-3">
+        <p class="h5 d-flex justify-content-between">Total <span>$<span id="total">0.00</span></span></p>
+        <button id="btnPagar" class="btn btn-primary w-100">💳 Ir a pagar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. MODAL DE PAGO (simulado) -->
+  <div class="modal fade" id="modalPago" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <form id="formPago" class="modal-content" novalidate>
+        <div class="modal-header">
+          <h5 class="modal-title">💳 Pasarela de pago</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <p class="text-muted small">Simulación: no se procesa ningún cobro real. Usa datos de prueba.</p>
+          <div class="mb-3">
+            <label class="form-label" for="pNombre">Nombre completo</label>
+            <input id="pNombre" class="form-control" required minlength="3" autocomplete="off">
+            <div class="invalid-feedback">Escribe tu nombre completo.</div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="pTarjeta">Número de tarjeta</label>
+            <input id="pTarjeta" class="form-control" inputmode="numeric" placeholder="1234 5678 9012 3456" required autocomplete="off">
+            <div class="invalid-feedback">La tarjeta debe tener 16 dígitos.</div>
+          </div>
+          <div class="row">
+            <div class="col mb-3">
+              <label class="form-label" for="pVence">Vencimiento</label>
+              <input id="pVence" class="form-control" placeholder="MM/AA" maxlength="5" required autocomplete="off">
+              <div class="invalid-feedback">Usa MM/AA y una fecha vigente.</div>
+            </div>
+            <div class="col mb-3">
+              <label class="form-label" for="pCvv">Código de seguridad</label>
+              <input id="pCvv" class="form-control" inputmode="numeric" maxlength="4" required autocomplete="off">
+              <div class="invalid-feedback">3 o 4 dígitos.</div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success w-100">✅ Pagar ahora</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Librerías: Bootstrap JS y jsPDF (ticket) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
